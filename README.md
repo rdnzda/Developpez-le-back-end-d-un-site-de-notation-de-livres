@@ -35,18 +35,21 @@ The back end of a book rating website: a REST API built with Node.js, Express an
 
 ## Getting started
 
-```bash
-npm install
-node server.js
-```
+1. Copy `.env.example` to `.env` and fill in your MongoDB connection string and a long random JWT secret. `.env` is ignored by Git: never commit it.
+2. Install the dependencies and start the API (Node.js 20.6 or later, which loads `.env` natively):
 
-The API needs a MongoDB connection string. Store it in an environment variable rather than in the code, and never commit it.
+   ```bash
+   npm install
+   npm start
+   ```
 
 ## Security review (2026)
 
-While re-reading this project as part of my cybersecurity training, I found four issues I plan to fix:
+While re-reading this project as part of my cybersecurity training, I found four issues:
 
 1. **Broken access control** (OWASP A01): the update and delete routes check that the user is logged in, but not that the book belongs to them.
 2. **Rating spoofing**: the rating route reads the user ID from the request body instead of the verified token.
-3. **Hard-coded JWT secret**: the token signing key is written in the code instead of an environment variable.
-4. **Hard-coded database credentials**: the MongoDB connection string, with its password, is written in `app.js`. The fix is to rotate the password and load the connection string from an environment variable.
+3. **Hard-coded JWT secret** ✅ *fixed*: the token signing key is now read from the `JWT_SECRET` environment variable.
+4. **Hard-coded database credentials** ✅ *fixed*: the connection string is now read from the `MONGODB_URI` environment variable, and the exposed password has to be rotated since it remains in the Git history.
+
+Issues 1 and 2 are still open.

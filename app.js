@@ -6,10 +6,13 @@ const userRoutes = require('./routes/user');
 const path = require('path');
 
 
-const username = encodeURIComponent("rdnzda")
-const password = encodeURIComponent("Red36000910#");
+for (const name of ['MONGODB_URI', 'JWT_SECRET']) {
+  if (!process.env[name]) {
+    throw new Error(`${name} is missing: copy .env.example to .env and fill it in.`);
+  }
+}
 
-mongoose.connect(`mongodb+srv://${username}:${password}@cluster0.f2jweqg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`,
+mongoose.connect(process.env.MONGODB_URI,
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
